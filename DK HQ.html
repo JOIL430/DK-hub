@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DK Hub Ultimate Next Level</title>
+    <style>
+        :root {
+            --bg: #f6f8fa;
+            --fg: #222;
+            --card-bg: #fff;
+            --primary: #4a00e0;
+            --primary-hover: #8e2de2;
+            --secondary: #f59e0b;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            transition: 0.3s;
+        }
+
+        body.dark {
+            --bg: #121212;
+            --fg: #e0e0e0;
+            --card-bg: #1f1f1f;
+            --primary: #d97706;
+            --primary-hover: #f59e0b;
+            --secondary: #f59e0b;
+        }
+
+        header {
+            background: linear-gradient(90deg, #4a00e0, #8e2de2);
+            color: #fff;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        header nav ul {
+            list-style: none;
+            display: flex;
+            gap: 1rem;
+            margin: 0;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: 0.25s;
+            cursor: pointer;
+        }
+
+        header nav ul li a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn {
+            border: none;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #999;
+            border-radius: 6px;
+            margin: 0.4rem 0;
+        }
+
+        section {
+            display: none;
+            padding: 3rem 2rem;
+            min-height: 80vh;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+        }
+
+        #store .products {
+            margin-top: 1rem;
+        }
+
+        .product-card {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: var(--shadow);
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .product-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .product‑details {
+            flex: 1;
+        }
+
+        .product‑actions button {
+            margin-left: 0.5rem;
+        }
+
+        #gallery img {
+            width: 140px;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: 0.3s;
+        }
+
+        #gallery img:hover {
+            transform: scale(1.08);
+        }
+
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+        }
+
+        .blog-post,
+        .coding-card {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .blog-post button,
+        .coding-card button {
+            position: absolute;
+            top: 0.6rem;
+            right: 0.6rem;
+            margin-left: 0.4rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="brand">DK Hub Ultimate HQ</div>
+            <ul>
+                <li><a data-target="home">Home</a></li>
+                <li><a data-target="store">Store</a></li>
+                <li><a data-target="gallery">Gallery</a></li>
+                <li><a data-target="blog">Blog</a></li>
+                <li><a data-target="coding">Coding Projects</a></li>
+                <li><a data-target="settings">Settings</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+
+        <!-- HOME -->
+        <section id="home" class="active">
+            <h1>Welcome to DK Hub Ultimate 🔥</h1>
+            <p>This is the ultimate interactive mega app with products, gallery, blog, coding projects and theme
+                persistence!</p>
+        </section>
+
+        <!-- STORE -->
+        <section id="store">
+            <h1>Product Catalog</h1>
+            <input type="text" id="productSearch" placeholder="Search products…">
+            <div class="products" id="productList"></div>
+        </section>
+
+        <!-- GALLERY -->
+        <section id="gallery">
+            <h1>Gallery</h1>
+            <input type="file" id="uploadMedia" multiple>
+            <div id="mediaPreview"></div>
+            <div id="lightbox"><img src=""></div>
+        </section>
+
+        <!-- BLOG -->
+        <section id="blog">
+            <h1>Blog</h1>
+            <input type="text" id="blogTitle" placeholder="Blog Title">
+            <textarea id="blogContent" rows="4" placeholder="Blog Content"></textarea>
+            <button class="btn" id="addBlogPost">Post</button>
+            <div id="postsContainer"></div>
+        </section>
+
+        <!-- CODING PROJECTS -->
+        <section id="coding">
+            <h1>Saved Coding Projects</h1>
+            <input type="text" id="projName" placeholder="Project Name">
+            <textarea id="projCode" rows="10" placeholder="Paste HTML/JS/CSS here"></textarea>
+            <button class="btn" id="addProject">Save Project</button>
+            <h2>My Projects</h2>
+            <div id="projectsList"></div>
+            <h2>Preview</h2>
+            <iframe id="projPreview" style="width:100%;height:400px;border:1px solid #ccc;border-radius:8px;"></iframe>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="settings">
+            <h1>Settings</h1>
+            <button class="btn" id="toggleTheme">Toggle Dark/Light Mode</button>
+        </section>
+
+    </main>
+    <footer>
+        <p>&copy; 2026 DK Hub Ultimate. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // ===== SPA NAV =====
+        const links = document.querySelectorAll("a[data-target]");
+        const sections = document.querySelectorAll("section");
+        links.forEach(l => l.addEventListener("click", () => { sections.forEach(s => s.classList.remove("active")); document.getElementById(l.dataset.target).classList.add("active"); }));
+
+        // ===== LOCAL STORAGE HELPERS =====
+        function saveData(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+        function loadData(key, fallback) { return JSON.parse(localStorage.getItem(key)) || fallback; }
+
+        // ===== PRODUCTS =====
+        let products = loadData("dk_products", []);
+        if (products.length === 0) { for (let i = 1; i <= 50; i++) { products.push({ id: i, name: "Product " + i, image: `https://placeholdpicsum.dev/photo/300/300?seed=${i}` }); } saveData("dk_products", products); }
+        function renderProducts(filter = "") { const list = document.getElementById("productList"); list.innerHTML = ""; products.filter(p => p.name.toLowerCase().includes(filter.toLowerCase())).forEach(p => { const card = document.createElement("div"); card.className = "product-card"; card.innerHTML = `<img src="${p.image}" alt="${p.name}"><div class="product‑details"><h4>${p.name}</h4></div>`; list.appendChild(card); }); }
+        document.getElementById("productSearch").addEventListener("input", e => { renderProducts(e.target.value); });
+        renderProducts();
+
+        // ===== GALLERY =====
+        const lightbox = document.getElementById("lightbox");
+        const mediaPreview = document.getElementById("mediaPreview");
+        document.getElementById("uploadMedia").addEventListener("change", e => { mediaPreview.innerHTML = ""; Array.from(e.target.files).forEach(file => { const reader = new FileReader(); reader.onload = ev => { const img = document.createElement("img"); img.src = ev.target.result; img.onclick = () => { lightbox.style.display = "flex"; lightbox.querySelector("img").src = ev.target.result; }; mediaPreview.appendChild(img); }; reader.readAsDataURL(file); }); });
+        lightbox.onclick = () => { lightbox.style.display = "none"; };
+
+        // ===== BLOG =====
+        let posts = loadData("dk_blog_posts", []);
+        function renderPosts() { const container = document.getElementById("postsContainer"); container.innerHTML = ""; posts.forEach((post, index) => { const div = document.createElement("div"); div.className = "blog-post card"; div.innerHTML = `<h3 contenteditable="true">${post.title}</h3><p contenteditable="true">${post.content}</p><button class="btn edit">Save</button><button class="btn remove">Delete</button>`; container.appendChild(div); div.querySelector(".remove").onclick = () => { posts.splice(index, 1); saveData("dk_blog_posts", posts); renderPosts(); }; div.querySelector(".edit").onclick = () => { post.title = div.querySelector("h3").textContent; post.content = div.querySelector("p").textContent; saveData("dk_blog_posts", posts); alert("Saved!"); }; }); }
+        document.getElementById("addBlogPost").onclick = () => { const title = document.getElementById("blogTitle").value.trim(); const content = document.getElementById("blogContent").value.trim(); if (title && content) { posts.unshift({ title, content }); saveData("dk_blog_posts", posts); renderPosts(); document.getElementById("blogTitle").value = ""; document.getElementById("blogContent").value = ""; } };
+        renderPosts();
+
+        // ===== CODING PROJECTS =====
+        let codingProjects = loadData("dk_coding_projects", []);
+        function updatePreview(code) {
+            const iframe = document.getElementById("projPreview");
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(code);
+            iframeDoc.close();
+        }
+        function renderProjects() { const list = document.getElementById("projectsList"); list.innerHTML = ""; codingProjects.forEach((p, index) => { const div = document.createElement("div"); div.className = "coding-card card"; div.style.cursor = "pointer"; div.style.marginBottom = "0.8rem"; div.innerHTML = `<strong>${p.name}</strong><button class="btn remove" style="float:right">Delete</button>`; list.appendChild(div); div.addEventListener("click", e => { if (!e.target.classList.contains("remove")) { updatePreview(p.code); } }); div.querySelector(".remove").addEventListener("click", e => { e.stopPropagation(); codingProjects.splice(index, 1); saveData("dk_coding_projects", codingProjects); renderProjects(); }); }); }
+        document.getElementById("addProject").addEventListener("click", () => { const name = document.getElementById("projName").value.trim(); const code = document.getElementById("projCode").value; if (!name || !code) return alert("Provide name and code!"); codingProjects.push({ name, code }); saveData("dk_coding_projects", codingProjects); renderProjects(); updatePreview(code); document.getElementById("projName").value = ""; document.getElementById("projCode").value = ""; });
+        renderProjects();
+
+        // ===== THEME =====
+        if (localStorage.getItem("dk_theme") === "dark") document.body.classList.add("dark");
+        document.getElementById("toggleTheme").onclick = () => { document.body.classList.toggle("dark"); saveData("dk_theme", document.body.classList.contains("dark") ? "dark" : "light"); };
+    </script>
+</body>
+
+</html>
