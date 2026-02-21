@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DK Studio Pro 🎧</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at top, #2b0055, #000);
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* background glow lights */
+        .glow1,
+        .glow2,
+        .glow3 {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.6;
+            animation: float 6s infinite alternate ease-in-out;
+        }
+
+        .glow1 {
+            width: 350px;
+            height: 350px;
+            background: #ff00ff;
+            top: 5%;
+            left: 10%;
+        }
+
+        .glow2 {
+            width: 400px;
+            height: 400px;
+            background: #00ffff;
+            bottom: 10%;
+            right: 10%;
+            animation-delay: 1s;
+        }
+
+        .glow3 {
+            width: 300px;
+            height: 300px;
+            background: #ff3300;
+            bottom: 30%;
+            left: 40%;
+            animation-delay: 2s;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateY(0px) translateX(0px);
+            }
+
+            to {
+                transform: translateY(-40px) translateX(40px);
+            }
+        }
+
+        /* main studio container */
+        .studio {
+            position: relative;
+            z-index: 10;
+            width: 95%;
+            max-width: 1350px;
+            margin: 20px auto;
+            height: 92vh;
+            background: rgba(15, 15, 20, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.2), 0 0 40px rgba(255, 0, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header h1 {
+            font-size: 22px;
+            letter-spacing: 2px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        header span {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 18px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+            overflow: auto;
+        }
+
+        .panel h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #ff00ff;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.6);
+        }
+
+        /* beat pads */
+        .pads {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .pad {
+            height: 70px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            transition: 0.15s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            user-select: none;
+        }
+
+        .pad:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), 0 0 25px rgba(255, 0, 255, 0.4);
+        }
+
+        .pad.active {
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.8), 0 0 25px rgba(255, 0, 255, 0.8);
+        }
+
+        /* center waveform */
+        .wavebox {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            gap: 12px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 230px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* player controls */
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            font-weight: bold;
+            cursor: pointer;
+            color: black;
+            transition: 0.2s;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.7), 0 0 25px rgba(255, 0, 255, 0.7);
+        }
+
+        .btn-red {
+            background: linear-gradient(135deg, #ff0044, #ff9900);
+            color: white;
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #00ff88, #00ffff);
+            color: black;
+        }
+
+        /* mixer sliders */
+        .slider-group {
+            margin-top: 10px;
+        }
+
+        .slider-group label {
+            font-size: 13px;
+            color: #bbb;
+            display: block;
+            margin: 8px 0 5px;
+        }
+
+        input[type=range] {
+            width: 100%;
+            accent-color: #00ffff;
+        }
+
+        /* right equalizer */
+        .eqbars {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 18px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bar {
+            width: 12px;
+            border-radius: 8px;
+            background: linear-gradient(to top, #00ffff, #ff00ff);
+            height: 30px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+        }
+
+        /* sequencer grid */
+        .seqTitle {
+            font-size: 14px;
+            margin-top: 14px;
+            margin-bottom: 10px;
+            color: #00ffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+            font-weight: 900;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 70px repeat(16, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .trackName {
+            font-size: 12px;
+            font-weight: 900;
+            opacity: 0.9;
+        }
+
+        .step {
+            height: 20px;
+            border-radius: 7px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: 0.1s;
+        }
+
+        .step.on {
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+
+        .step.playing {
+            outline: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        footer {
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        footer input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 12px;
+            color: white;
+            width: 280px;
+        }
+
+        footer p {
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .presetButtons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .presetButtons button {
+            flex: 1;
+            min-width: 110px;
+            padding: 10px;
+        }
+
+        /* voice recorder box */
+        .voiceBox {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 18px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .voiceBox h3 {
+            font-size: 14px;
+            color: #00ffff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+        }
+
+        .voiceBtns {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .voiceBtns button {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .smallText {
+            margin-top: 8px;
+            font-size: 12px;
+            opacity: 0.7;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="glow1"></div>
+    <div class="glow2"></div>
+    <div class="glow3"></div>
+
+    <div class="studio">
+        <header>
+            <h1>🎧 DK ONLINE MUSIC STUDIO PRO</h1>
+            <span>Real Drum Engine • Pads • Sequencer • Upload Song • Voice Recorder • MASTER RECORDER</span>
+        </header>
+
+        <div class="content">
+
+            <!-- Left: Beat pads -->
+            <div class="panel">
+                <h2>🔥 Beat Pads (REAL DRUMS)</h2>
+
+                <div class="pads" id="pads">
+                    <div class="pad" data-sound="Kick">Kick</div>
+                    <div class="pad" data-sound="Snare">Snare</div>
+                    <div class="pad" data-sound="HiHat">HiHat</div>
+                    <div class="pad" data-sound="Clap">Clap</div>
+                    <div class="pad" data-sound="808">808</div>
+                    <div class="pad" data-sound="Crash">Crash</div>
+                    <div class="pad" data-sound="Vox">Vox</div>
+                    <div class="pad" data-sound="FX">FX</div>
+                </div>
+
+                <div class="slider-group">
+                    <label>Tempo (BPM)</label>
+                    <input type="range" id="tempo" min="60" max="180" value="120">
+
+                    <label>Pad Volume</label>
+                    <input type="range" id="padVol" min="0" max="1" step="0.01" value="0.7">
+                </div>
+
+                <div class="seqTitle">🎼 Auto Beat Sequencer</div>
+                <div id="sequencer"></div>
+
+                <div class="presetButtons">
+                    <button onclick="loadPreset('TRAP')">🔥 TRAP</button>
+                    <button onclick="loadPreset('DRILL')">💀 DRILL</button>
+                    <button onclick="loadPreset('PHONK')">😈 PHONK</button>
+                    <button onclick="loadPreset('SAD')">😢 SAD</button>
+                    <button onclick="loadPreset('HAPPY')">😁 HAPPY</button>
+                    <button onclick="loadPreset('LOFI')">☕ LOFI</button>
+                    <button onclick="loadPreset('POP')">🎤 POP</button>
+                    <button onclick="loadPreset('EDM')">⚡ EDM</button>
+                    <button onclick="loadPreset('RAGE')">👹 RAGE</button>
+                    <button onclick="loadPreset('JERSEY')">🏀 JERSEY</button>
+                    <button onclick="loadPreset('AFRO')">🌍 AFRO</button>
+                    <button onclick="loadPreset('REGGAETON')">🔥 REGGAETON</button>
+                    <button class="btn-red" onclick="clearBeat()">🧹 CLEAR</button>
+                </div>
+
+                <div style="margin-top:12px; display:flex; gap:10px;">
+                    <button class="btn-green" id="startBeat">▶ START BEAT</button>
+                    <button class="btn-red" id="stopBeat">⏹ STOP</button>
+                </div>
+
+                <!-- VOICE RECORDER -->
+                <div class="voiceBox">
+                    <h3>🎙 Voice Recorder Studio</h3>
+
+                    <div class="voiceBtns">
+                        <button class="btn-green" id="recBtn">⏺ Record</button>
+                        <button class="btn-red" id="stopRecBtn">⏹ Stop</button>
+                        <button id="playRecBtn">▶ Play Voice</button>
+                        <button id="voiceLoopBtn">🔁 Voice Repeat: OFF</button>
+                        <button id="downloadVoiceBtn">⬇ Download Voice</button>
+                    </div>
+
+                    <div class="slider-group">
+                        <label>Voice Volume</label>
+                        <input type="range" id="voiceVol" min="0" max="1" step="0.01" value="0.8">
+
+                        <label>Voice FX (Reverb Amount)</label>
+                        <input type="range" id="reverbAmt" min="0" max="1" step="0.01" value="0.2">
+
+                        <label>Delay Amount</label>
+                        <input type="range" id="delayAmt" min="0" max="1" step="0.01" value="0.15">
+                    </div>
+
+                    <div class="smallText">
+                        🎧 Tip: Record vocals, then play song + beat + voice together like a real DAW.
+                    </div>
+                </div>
+
+                <!-- MASTER RECORDER -->
+                <div class="voiceBox">
+                    <h3>🎛 MASTER RECORDER (Record Your Full Song)</h3>
+
+                    <div class="voiceBtns">
+                        <button class="btn-green" id="startMasterRec">⏺ Record Studio Mix</button>
+                        <button class="btn-red" id="stopMasterRec">⏹ Stop Mix</button>
+                        <button id="playMasterMix">▶ Play Final Mix</button>
+                        <button id="downloadMasterMix">⬇ Download Final Mix (WAV)</button>
+                    </div>
+
+                    <div class="smallText">
+                        🔥 This records EVERYTHING: Song + Extra Track + Beat Sequencer + Your Voice.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Center: waveform + player -->
+            <div class="panel wavebox">
+                <h2>🎶 Waveform Visualizer</h2>
+                <canvas id="wave"></canvas>
+
+                <div class="controls">
+                    <button id="playBtn">▶ Play</button>
+                    <button id="pauseBtn">⏸ Pause</button>
+                    <button id="stopBtn">⏹ Stop</button>
+                    <button id="loopBtn">🔁 Repeat: OFF</button>
+                </div>
+
+                <!-- DJ MODE -->
+                <div class="voiceBox">
+                    <h3>🎚 DJ Mode (Crossfade)</h3>
+                    <div class="slider-group">
+                        <label>Crossfade (Song ↔ Voice)</label>
+                        <input type="range" id="crossfade" min="0" max="1" step="0.01" value="0.5">
+                    </div>
+                    <div class="smallText">
+                        Left = Song louder • Right = Voice louder
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right: Mixer + Equalizer -->
+            <div class="panel">
+                <h2>🎛 Mixer + EQ</h2>
+
+                <div class="eqbars" id="eqbars">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+
+                <div class="slider-group">
+                    <label>Master Volume</label>
+                    <input type="range" id="masterVol" min="0" max="1" step="0.01" value="0.8">
+
+                    <label>Bass Boost</label>
+                    <input type="range" id="bass" min="0" max="1" step="0.01" value="0.4">
+
+                    <label>Treble</label>
+                    <input type="range" id="treble" min="0" max="1" step="0.01" value="0.5">
+                </div>
+
+                <div style="margin-top:14px;">
+                    <h2>🎵 Extra Upload Tracks</h2>
+                    <div class="smallText">Upload another audio file (beat/vocal) and play it alongside your song.</div>
+
+                    <div class="slider-group">
+                        <label>Upload Extra Track (Beat / Vocal)</label>
+                        <input type="file" id="uploadExtra" accept="audio/*">
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <button class="btn-green" id="playExtraBtn">▶ Play Extra</button>
+                        <button class="btn-red" id="stopExtraBtn">⏹ Stop Extra</button>
+                        <button id="extraLoopBtn">🔁 Extra Repeat: OFF</button>
+                    </div>
+                </div>
+
+                <div style="margin-top:12px; font-size:12px; opacity:0.75; line-height:1.5;">
+                    🚀 Next upgrade: Piano Roll + Export Full Mix + Save Projects
+                </div>
+            </div>
+
+        </div>
+
+        <footer>
+            <input type="file" id="upload" accept="audio/*">
+            <p>Upload your song and it becomes your studio track 🎵</p>
+        </footer>
+    </div>
+
+    <script>
+        /* ===========================
+           AUDIO SETUP
+        =========================== */
+        let audio = new Audio();
+        audio.crossOrigin = "anonymous";
+
+        let extraAudio = new Audio();
+        extraAudio.crossOrigin = "anonymous";
+
+        let recordedAudio = new Audio();
+        recordedAudio.crossOrigin = "anonymous";
+
+        let finalMixAudio = new Audio();
+
+        let audioCtx = null;
+        let analyser = null;
+        let masterGain = null;
+        let source = null;
+
+        // extra sources
+        let extraSource = null;
+        let extraGain = null;
+
+        // voice sources
+        let voiceSource = null;
+        let voiceGain = null;
+
+        // FX nodes
+        let delayNode = null;
+        let delayGain = null;
+        let reverbNode = null;
+        let reverbGain = null;
+
+        // MASTER RECORD NODES
+        let destinationNode = null;
+        let masterRecorder = null;
+        let masterChunks = [];
+        let masterBlob = null;
+        let masterURL = null;
+
+        function initAudio() {
+            if (audioCtx) return;
+
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+
+            masterGain = audioCtx.createGain();
+            masterGain.gain.value = parseFloat(document.getElementById("masterVol").value);
+
+            source = audioCtx.createMediaElementSource(audio);
+
+            // MASTER RECORD DESTINATION
+            destinationNode = audioCtx.createMediaStreamDestination();
+
+            // connect song
+            source.connect(masterGain);
+            masterGain.connect(analyser);
+            analyser.connect(audioCtx.destination);
+
+            // ALSO SEND MASTER OUTPUT TO RECORDER
+            masterGain.connect(destinationNode);
+        }
+
+        async function unlockAudio() {
+            initAudio();
+            await audioCtx.resume();
+        }
+
+        /* ===========================
+           CREATE REVERB (Impulse)
+        =========================== */
+        function createReverbImpulse(duration = 2, decay = 2) {
+            const rate = audioCtx.sampleRate;
+            const length = rate * duration;
+            const impulse = audioCtx.createBuffer(2, length, rate);
+
+            for (let ch = 0; ch < 2; ch++) {
+                const data = impulse.getChannelData(ch);
+                for (let i = 0; i < length; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, decay);
+                }
+            }
+            return impulse;
+        }
+
+        function setupVoiceChain() {
+            if (voiceGain) return;
+
+            voiceGain = audioCtx.createGain();
+            voiceGain.gain.value = parseFloat(document.getElementById("voiceVol").value);
+
+            // delay
+            delayNode = audioCtx.createDelay(2.0);
+            delayNode.delayTime.value = 0.22;
+
+            delayGain = audioCtx.createGain();
+            delayGain.gain.value = parseFloat(document.getElementById("delayAmt").value);
+
+            // reverb
+            reverbNode = audioCtx.createConvolver();
+            reverbNode.buffer = createReverbImpulse(2.5, 2.2);
+
+            reverbGain = audioCtx.createGain();
+            reverbGain.gain.value = parseFloat(document.getElementById("reverbAmt").value);
+
+            // route:
+            voiceGain.connect(masterGain);
+
+            delayNode.connect(delayGain);
+            delayGain.connect(masterGain);
+
+            reverbNode.connect(reverbGain);
+            reverbGain.connect(masterGain);
+        }
+
+        /* ===========================
+           DRUM ENGINE (SYNTH)
+        =========================== */
+        function drumVolume() {
+            return parseFloat(document.getElementById("padVol").value) * parseFloat(document.getElementById("masterVol").value);
+        }
+
+        function playKick() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(45, audioCtx.currentTime + 0.13);
+
+            gain.gain.setValueAtTime(drumVolume(), audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.16);
+        }
+
+        function playSnare() {
+            const noise = audioCtx.createBufferSource();
+            const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "highpass";
+            filter.frequency.value = 1200;
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(drumVolume() * 0.9, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.16);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+
+            noise.start();
+            noise.stop(audioCtx.currentTime + 0.17);
+        }
+
+        function playHat() {
+            const noise = audioCtx.createBufferSource();
+            const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.06, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "highpass";
+            filter.frequency.value = 5500;
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(drumVolume() * 0.6, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+
+            noise.start();
+            noise.stop(audioCtx.currentTime + 0.06);
+        }
+
+        function playClap() {
+            for (let i = 0; i < 3; i++) {
+                const noise = audioCtx.createBufferSource();
+                const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.1, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+
+                for (let j = 0; j < data.length; j++) data[j] = Math.random() * 2 - 1;
+
+                noise.buffer = buffer;
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(drumVolume() * 0.65, audioCtx.currentTime + i * 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12 + i * 0.015);
+
+                noise.connect(gain);
+                gain.connect(masterGain);
+
+                noise.start(audioCtx.currentTime + i * 0.015);
+                noise.stop(audioCtx.currentTime + 0.14 + i * 0.015);
+            }
+        }
+
+        function play808() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(65, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.35);
+
+            gain.gain.setValueAtTime(drumVolume() * 0.9, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.42);
+        }
+
+        function playCrash() {
+            const noise = audioCtx.createBufferSource();
+            const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.4, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+
+            for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
+
+            noise.buffer = buffer;
+
+            const filter = audioCtx.createBiquadFilter();
+            filter.type = "highpass";
+            filter.frequency.value = 3000;
+
+            const gain = audioCtx.createGain();
+            gain.gain.setValueAtTime(drumVolume() * 0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(masterGain);
+
+            noise.start();
+            noise.stop(audioCtx.currentTime + 0.42);
+        }
+
+        function playFX() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.2);
+
+            gain.gain.setValueAtTime(drumVolume() * 0.35, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.24);
+        }
+
+        function playVox() {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = "square";
+            osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.18);
+
+            gain.gain.setValueAtTime(drumVolume() * 0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+
+            osc.connect(gain);
+            gain.connect(masterGain);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.22);
+        }
+
+        function triggerSound(name) {
+            if (!audioCtx) return;
+            if (name === "Kick") playKick();
+            if (name === "Snare") playSnare();
+            if (name === "HiHat") playHat();
+            if (name === "Clap") playClap();
+            if (name === "808") play808();
+            if (name === "Crash") playCrash();
+            if (name === "FX") playFX();
+            if (name === "Vox") playVox();
+        }
+
+        /* ===========================
+           BEAT PADS
+        =========================== */
+        const pads = document.querySelectorAll(".pad");
+        pads.forEach(pad => {
+            pad.addEventListener("click", async () => {
+                await unlockAudio();
+                pad.classList.add("active");
+                triggerSound(pad.dataset.sound);
+                setTimeout(() => pad.classList.remove("active"), 140);
+            });
+        });
+
+        /* ===========================
+           UPLOAD AUDIO TRACK
+        =========================== */
+        const upload = document.getElementById("upload");
+
+        upload.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                await unlockAudio();
+                audio.src = URL.createObjectURL(file);
+                alert("Song Loaded! Now press Play 🎧🔥");
+            }
+        });
+
+        /* ===========================
+           EXTRA TRACK UPLOAD
+        =========================== */
+        const uploadExtra = document.getElementById("uploadExtra");
+        const playExtraBtn = document.getElementById("playExtraBtn");
+        const stopExtraBtn = document.getElementById("stopExtraBtn");
+        const extraLoopBtn = document.getElementById("extraLoopBtn");
+
+        uploadExtra.addEventListener("change", async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            await unlockAudio();
+            extraAudio.src = URL.createObjectURL(file);
+            alert("Extra Track Loaded! Press Play Extra 🎛🔥");
+
+            if (!extraSource) {
+                extraSource = audioCtx.createMediaElementSource(extraAudio);
+                extraGain = audioCtx.createGain();
+                extraGain.gain.value = 0.8;
+
+                extraSource.connect(extraGain);
+                extraGain.connect(masterGain);
+            }
+        });
+
+        playExtraBtn.onclick = async () => {
+            if (!extraAudio.src) return alert("Upload extra track first!");
+            await unlockAudio();
+            extraAudio.volume = parseFloat(document.getElementById("masterVol").value);
+            extraAudio.play();
+        };
+
+        stopExtraBtn.onclick = () => {
+            extraAudio.pause();
+            extraAudio.currentTime = 0;
+        };
+
+        extraLoopBtn.onclick = () => {
+            extraAudio.loop = !extraAudio.loop;
+            if (extraAudio.loop) {
+                extraLoopBtn.textContent = "🔁 Extra Repeat: ON";
+                extraLoopBtn.classList.add("btn-green");
+            } else {
+                extraLoopBtn.textContent = "🔁 Extra Repeat: OFF";
+                extraLoopBtn.classList.remove("btn-green");
+            }
+        };
+
+        /* ===========================
+           CONTROLS
+        =========================== */
+        const playBtn = document.getElementById("playBtn");
+        const pauseBtn = document.getElementById("pauseBtn");
+        const stopBtn = document.getElementById("stopBtn");
+
+        playBtn.onclick = async () => {
+            if (audio.src === "") {
+                alert("Upload a song first 🎵");
+                return;
+            }
+            await unlockAudio();
+            audio.volume = parseFloat(document.getElementById("masterVol").value);
+            audio.play();
+        };
+
+        pauseBtn.onclick = () => audio.pause();
+
+        stopBtn.onclick = () => {
+            audio.pause();
+            audio.currentTime = 0;
+        };
+
+        /* ===========================
+           LOOP / REPEAT FOREVER (SONG)
+        =========================== */
+        const loopBtn = document.getElementById("loopBtn");
+
+        loopBtn.onclick = () => {
+            audio.loop = !audio.loop;
+
+            if (audio.loop) {
+                loopBtn.textContent = "🔁 Repeat: ON";
+                loopBtn.classList.add("btn-green");
+            } else {
+                loopBtn.textContent = "🔁 Repeat: OFF";
+                loopBtn.classList.remove("btn-green");
+            }
+        };
+
+        /* ===========================
+           MASTER VOLUME
+        =========================== */
+        document.getElementById("masterVol").addEventListener("input", () => {
+            if (masterGain) {
+                masterGain.gain.value = parseFloat(document.getElementById("masterVol").value);
+            }
+            audio.volume = parseFloat(document.getElementById("masterVol").value);
+            extraAudio.volume = parseFloat(document.getElementById("masterVol").value);
+            recordedAudio.volume = parseFloat(document.getElementById("voiceVol").value);
+        });
+
+        /* ===========================
+           VISUALIZER (CANVAS)
+        =========================== */
+        const canvas = document.getElementById("wave");
+        const ctx = canvas.getContext("2d");
+
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        function drawWave() {
+            requestAnimationFrame(drawWave);
+
+            if (!analyser) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                return;
+            }
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const barWidth = (canvas.width / bufferLength) * 2.2;
+            let x = 0;
+
+            for (let i = 0; i < bufferLength; i++) {
+                const barHeight = dataArray[i];
+
+                const r = barHeight + 40;
+                const g = 0;
+                const b = 255 - barHeight;
+
+                ctx.fillStyle = `rgb(${r},${g},${b})`;
+                ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+
+                x += barWidth + 1;
+            }
+        }
+        drawWave();
+
+        /* ===========================
+           EQ ANIMATION
+        =========================== */
+        const bars = document.querySelectorAll(".bar");
+        function animateEQ() {
+            bars.forEach(bar => {
+                let height = Math.random() * 170 + 20;
+                bar.style.height = height + "px";
+            });
+        }
+        setInterval(animateEQ, 120);
+
+        /* ===========================
+           SEQUENCER
+        =========================== */
+        const tracks = ["Kick", "Snare", "HiHat", "Clap", "808"];
+        const steps = 16;
+        let currentStep = 0;
+        let loopInterval = null;
+
+        let beatPattern = {};
+        tracks.forEach(t => {
+            beatPattern[t] = new Array(steps).fill(false);
+        });
+
+        const sequencerDiv = document.getElementById("sequencer");
+
+        function buildSequencer() {
+            sequencerDiv.innerHTML = "";
+            tracks.forEach(track => {
+                const row = document.createElement("div");
+                row.className = "row";
+
+                const name = document.createElement("div");
+                name.className = "trackName";
+                name.textContent = track;
+                row.appendChild(name);
+
+                for (let i = 0; i < steps; i++) {
+                    const stepDiv = document.createElement("div");
+                    stepDiv.className = "step";
+                    stepDiv.dataset.track = track;
+                    stepDiv.dataset.index = i;
+
+                    stepDiv.onclick = () => {
+                        stepDiv.classList.toggle("on");
+                        beatPattern[track][i] = stepDiv.classList.contains("on");
+                    };
+
+                    row.appendChild(stepDiv);
+                }
+
+                sequencerDiv.appendChild(row);
+            });
+        }
+        buildSequencer();
+
+        function playSequencerStep() {
+            document.querySelectorAll(".step").forEach(s => s.classList.remove("playing"));
+
+            document.querySelectorAll(`.step[data-index="${currentStep}"]`).forEach(step => {
+                step.classList.add("playing");
+                const track = step.dataset.track;
+
+                if (beatPattern[track][currentStep]) {
+                    triggerSound(track);
+                }
+            });
+
+            currentStep = (currentStep + 1) % steps;
+        }
+
+        function startBeat() {
+            unlockAudio();
+
+            const bpm = parseInt(document.getElementById("tempo").value);
+            const stepTime = (60 / bpm) / 4 * 1000;
+
+            if (loopInterval) clearInterval(loopInterval);
+            loopInterval = setInterval(playSequencerStep, stepTime);
+        }
+
+        function stopBeat() {
+            if (loopInterval) clearInterval(loopInterval);
+            loopInterval = null;
+            currentStep = 0;
+            document.querySelectorAll(".step").forEach(s => s.classList.remove("playing"));
+        }
+
+        document.getElementById("startBeat").onclick = startBeat;
+        document.getElementById("stopBeat").onclick = stopBeat;
+
+        document.getElementById("tempo").addEventListener("input", () => {
+            if (loopInterval) {
+                startBeat();
+            }
+        });
+
+        /* ===========================
+           PRESETS
+        =========================== */
+        const presets = {
+            TRAP: {
+                Kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0]
+            },
+            DRILL: {
+                Kick: [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0]
+            },
+            PHONK: {
+                Kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0]
+            },
+            SAD: {
+                Kick: [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+                Clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+            },
+            HAPPY: {
+                Kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+                Clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                "808": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+            },
+            LOFI: {
+                Kick: [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+                Clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+            },
+            POP: {
+                Kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+            },
+            EDM: {
+                Kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+                Snare: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                HiHat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
+            },
+            RAGE: {
+                Kick: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+            },
+            JERSEY: {
+                Kick: [1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0]
+            },
+            AFRO: {
+                Kick: [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0]
+            },
+            REGGAETON: {
+                Kick: [1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+                Snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                HiHat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+                Clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+                "808": [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0]
+            }
+        };
+
+        function loadPreset(name) {
+            const p = presets[name];
+            if (!p) return;
+
+            tracks.forEach(track => {
+                for (let i = 0; i < steps; i++) {
+                    beatPattern[track][i] = p[track][i] === 1;
+                }
+            });
+
+            document.querySelectorAll(".step").forEach(step => {
+                const t = step.dataset.track;
+                const idx = parseInt(step.dataset.index);
+
+                step.classList.remove("on");
+                if (beatPattern[t][idx]) step.classList.add("on");
+            });
+        }
+
+        function clearBeat() {
+            tracks.forEach(track => {
+                beatPattern[track].fill(false);
+            });
+
+            document.querySelectorAll(".step").forEach(step => {
+                step.classList.remove("on");
+            });
+        }
+
+        loadPreset("TRAP");
+
+        /* ===========================
+           VOICE RECORDER SYSTEM
+        =========================== */
+        const recBtn = document.getElementById("recBtn");
+        const stopRecBtn = document.getElementById("stopRecBtn");
+        const playRecBtn = document.getElementById("playRecBtn");
+        const downloadVoiceBtn = document.getElementById("downloadVoiceBtn");
+        const voiceLoopBtn = document.getElementById("voiceLoopBtn");
+
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let recordedBlob = null;
+        let recordedURL = null;
+
+        recBtn.onclick = async () => {
+            await unlockAudio();
+            setupVoiceChain();
+
+            recordedChunks = [];
+
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) recordedChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                recordedBlob = new Blob(recordedChunks, { type: "audio/webm" });
+
+                if (recordedURL) URL.revokeObjectURL(recordedURL);
+                recordedURL = URL.createObjectURL(recordedBlob);
+
+                recordedAudio.src = recordedURL;
+                alert("✅ Voice Recorded! Press Play Voice 🎙🔥");
+
+                if (!voiceSource) {
+                    voiceSource = audioCtx.createMediaElementSource(recordedAudio);
+
+                    voiceSource.connect(voiceGain);
+                    voiceSource.connect(delayNode);
+                    voiceSource.connect(reverbNode);
+                }
+            };
+
+            mediaRecorder.start();
+            alert("🎙 Recording started...");
+        };
+
+        stopRecBtn.onclick = () => {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+            }
+        };
+
+        playRecBtn.onclick = async () => {
+            if (!recordedAudio.src) return alert("Record voice first!");
+            await unlockAudio();
+            recordedAudio.volume = parseFloat(document.getElementById("voiceVol").value);
+            recordedAudio.play();
+        };
+
+        voiceLoopBtn.onclick = () => {
+            recordedAudio.loop = !recordedAudio.loop;
+            if (recordedAudio.loop) {
+                voiceLoopBtn.textContent = "🔁 Voice Repeat: ON";
+                voiceLoopBtn.classList.add("btn-green");
+            } else {
+                voiceLoopBtn.textContent = "🔁 Voice Repeat: OFF";
+                voiceLoopBtn.classList.remove("btn-green");
+            }
+        };
+
+        downloadVoiceBtn.onclick = () => {
+            if (!recordedBlob) return alert("Record voice first!");
+
+            const a = document.createElement("a");
+            a.href = recordedURL;
+            a.download = "DK_VoiceRecording.webm";
+            a.click();
+        };
+
+        // voice sliders
+        document.getElementById("voiceVol").addEventListener("input", () => {
+            if (voiceGain) voiceGain.gain.value = parseFloat(document.getElementById("voiceVol").value);
+            recordedAudio.volume = parseFloat(document.getElementById("voiceVol").value);
+        });
+
+        document.getElementById("delayAmt").addEventListener("input", () => {
+            if (delayGain) delayGain.gain.value = parseFloat(document.getElementById("delayAmt").value);
+        });
+
+        document.getElementById("reverbAmt").addEventListener("input", () => {
+            if (reverbGain) reverbGain.gain.value = parseFloat(document.getElementById("reverbAmt").value);
+        });
+
+        /* ===========================
+           DJ CROSSFADE
+        =========================== */
+        const crossfade = document.getElementById("crossfade");
+
+        crossfade.addEventListener("input", () => {
+            const x = parseFloat(crossfade.value);
+
+            const songVol = 1 - x;
+            const voiceVol = x;
+
+            audio.volume = songVol * parseFloat(document.getElementById("masterVol").value);
+
+            if (voiceGain) {
+                voiceGain.gain.value = voiceVol * parseFloat(document.getElementById("voiceVol").value);
+            }
+        });
+
+        /* ===========================
+           MASTER RECORDER (FULL MIX)
+        =========================== */
+        const startMasterRec = document.getElementById("startMasterRec");
+        const stopMasterRec = document.getElementById("stopMasterRec");
+        const playMasterMix = document.getElementById("playMasterMix");
+        const downloadMasterMix = document.getElementById("downloadMasterMix");
+
+        startMasterRec.onclick = async () => {
+            await unlockAudio();
+
+            masterChunks = [];
+
+            masterRecorder = new MediaRecorder(destinationNode.stream);
+
+            masterRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) masterChunks.push(e.data);
+            };
+
+            masterRecorder.onstop = () => {
+                masterBlob = new Blob(masterChunks, { type: "audio/webm" });
+
+                if (masterURL) URL.revokeObjectURL(masterURL);
+                masterURL = URL.createObjectURL(masterBlob);
+
+                finalMixAudio.src = masterURL;
+                alert("🔥 FINAL MIX RECORDED! Press Play Final Mix 🎶");
+            };
+
+            masterRecorder.start();
+            alert("🎛 MASTER RECORDING STARTED! Play your song + beat + voice now!");
+        };
+
+        stopMasterRec.onclick = () => {
+            if (masterRecorder && masterRecorder.state !== "inactive") {
+                masterRecorder.stop();
+            }
+        };
+
+        playMasterMix.onclick = () => {
+            if (!finalMixAudio.src) return alert("Record the mix first!");
+            finalMixAudio.play();
+        };
+
+        downloadMasterMix.onclick = () => {
+            if (!masterBlob) return alert("Record the mix first!");
+
+            const a = document.createElement("a");
+            a.href = masterURL;
+            a.download = "DK_FinalMix.webm";
+            a.click();
+        };
+    </script>
+
+</body>
+
+</html>
